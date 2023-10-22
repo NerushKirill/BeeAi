@@ -1,7 +1,10 @@
 from fastapi import APIRouter
 
+import asyncio
+
 from ...core.settings import settings
-from ..controllers import Item, get_items
+from ...core.models import engine_prod
+from ..controllers import Item, get_items, check_question, add_question
 
 router = APIRouter(
     prefix="/items",
@@ -12,12 +15,16 @@ router = APIRouter(
 
 @router.post(settings.main_url)
 async def read_public_api(item: Item):
-    r = await get_items(item)
-    for i in r:
-        print(
-            i["id"],
-            i["answer"],
-            i["question"],
-            i["created_at"],
+    answer = await get_items(item)
+    not_in_db = []
+
+    for question in answer:
+        # result = await check_question(engine_prod.session_dependency(), question)
+        not_in_db.append(
+            await check_question(engine_prod.session_dependency(), question)
         )
-    return r
+
+    for question in not_in_db:
+        await add_question(engine_prod.session_dependency(), question)
+
+    return not_in_db
