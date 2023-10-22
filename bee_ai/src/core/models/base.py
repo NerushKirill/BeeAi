@@ -1,12 +1,9 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
+from sqlalchemy.orm import DeclarativeBase, declared_attr
 
 
 class Base(DeclarativeBase):
     __abstract__ = True
 
-    @classmethod
-    @declared_attr  # No error!
+    @declared_attr
     def __tablename__(cls) -> str:
         return cls.__name__.lower()
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, unique=True)

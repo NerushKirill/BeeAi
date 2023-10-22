@@ -7,10 +7,11 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
     )
 
-    main_url: str = ""
+    main_url: str
 
-    db_url: str = ""
-    db_echo: bool = False
+    db_url: str
+    db_url_migrations: str
+    db_echo: bool
 
 
 settings = Settings()

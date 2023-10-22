@@ -1,7 +1,7 @@
-import httpx
 from fastapi import APIRouter
 
-from .schemas import Item
+from ...core.settings import settings
+from ..controllers import Item, get_items
 
 router = APIRouter(
     prefix="/items",
@@ -10,10 +10,14 @@ router = APIRouter(
 )
 
 
-@router.post("/")
+@router.post(settings.main_url)
 async def read_public_api(item: Item):
-    async with httpx.AsyncClient() as client:
-        r = await client.get(
-            f"https://jservice.io/api/random?count={item.questions_num}"
+    r = await get_items(item)
+    for i in r:
+        print(
+            i["id"],
+            i["answer"],
+            i["question"],
+            i["created_at"],
         )
-        return r.json()
+    return r
