@@ -1,4 +1,4 @@
-name: Main SI
+name: Main CI
 
 on: [push]
 
